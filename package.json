@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-emailer-sparkpost",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An emailer plugin for NodeBB using SparkPost as a third party service",
   "main": "index.js",
   "repository": {
@@ -24,6 +24,6 @@
     "path": "~0.4.9"
   },
   "nbbpm": {
-    "compatibility": "^1.1.2"
+    "compatibility": "^0.9.0 || ^1.1.2"
   }
 }
