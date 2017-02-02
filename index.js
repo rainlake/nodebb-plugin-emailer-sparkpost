@@ -34,17 +34,15 @@ Emailer.send = function(data, callback) {
 	}
 
 	server.transmissions.send({
-		transmissionBody: {
-			content: {
-				from: data.from,
-				subject: data.subject,
-				html: data.html,
-				text: data.plaintext
-			},
-			recipients: [
-				{address: data.to}
-			]
-		}
+		content: {
+            from: data.from,
+            subject: data.subject,
+            html: data.html,
+            text: data.plaintext
+        },
+        recipients: [
+            {address: data.to}
+        ]
 	}, function (err, res) {
 		if (!err) {
 			winston.verbose('[emailer.sparkpost] Sent `' + data.template + '` email to uid ' + data.uid);
