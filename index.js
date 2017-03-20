@@ -1,12 +1,9 @@
-var	fs = require('fs'),
-	path = require('path'),
-
-	winston = module.parent.require('winston'),
+var	winston = module.parent.require('winston'),
 	Meta = module.parent.require('./meta'),
 
 	Emailer = {},
 	Sparkpost = require('sparkpost'),
-	server;
+	client;
 
 Emailer.init = function(params, callback) {
 	function render(req, res, next) {
@@ -15,9 +12,9 @@ Emailer.init = function(params, callback) {
 
 	Meta.settings.get('sparkpost', function(err, settings) {
 		if (!err && settings && settings.apiKey) {
-			server = new Sparkpost(settings.apiKey);
+			client = new Sparkpost(settings.apiKey);
 		} else {
-			winston.error('[plugins/emailer-sparkpost] API key not set!');
+			winston.error('[emailer.sparkpost] API key not set!');
 		}
 	});
 
@@ -28,14 +25,17 @@ Emailer.init = function(params, callback) {
 };
 
 Emailer.send = function(data, callback) {
-	if (!server) {
+	if (!client) {
 		winston.error('[emailer.sparkpost] Sparkpost is not set up properly!')
 		return callback(null, data);
 	}
 
-	server.transmissions.send({
-		content: {
-            from: data.from,
+    client.transmissions.send({
+        content: {
+            from: {
+		name: data.from_name,
+		email: data.from
+	    },
             subject: data.subject,
             html: data.html,
             text: data.plaintext
@@ -43,7 +43,7 @@ Emailer.send = function(data, callback) {
         recipients: [
             {address: data.to}
         ]
-	}, function (err, res) {
+    }, function (err, res) {
 		if (!err) {
 			winston.verbose('[emailer.sparkpost] Sent `' + data.template + '` email to uid ' + data.uid);
 		} else {
